@@ -1,1 +1,0 @@
-oobj-redis
