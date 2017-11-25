@@ -1,0 +1,243 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Redis - Monitoramento de Filas</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Custom CSS -->
+	<link href="assets/css/custom.css" rel="stylesheet">
+	<!-- Le styles -->
+	<link href="assets/css/bootstrap.css" rel="stylesheet">
+	<link href="assets/css/main.css" rel="stylesheet">
+	<link href="assets/css/font-style.css" rel="stylesheet">
+	<link href="assets/css/flexslider.css" rel="stylesheet">
+	<!-- DATA TABLE CSS -->
+	<link href="assets/css/table.css" rel="stylesheet">
+	<!-- JQUERY -->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+
+	<style type="text/css">
+		body {
+			padding-top: 70px;
+		}
+	</style>
+	<link rel="shortcut icon" href="assets/img/favicon.png">
+	<!-- Google Fonts call. Font Used Open Sans & Raleway -->
+	<link href="http://fonts.googleapis.com/css?family=Raleway:400,300" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+	<!-- MENU -->
+	<div class="navbar-nav navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand logooobj" href="index.html">
+					<img src="assets/images/favicon-painel-1.png" alt=""> Redis - Monitoramento de Filas</a>
+			</div>
+				<h4 style="text-align: right "><b><div>Data e Hora da Inicialização</div>
+				<div id="dhInicializacao">01/01/2001 13:00:00</div></b></h4>
+		</div>
+	</div>
+
+	<div class="container">
+		<!-- PRIMEIRA LINHA DE BLOCOS -->
+		<div class="row">
+			<div class="col-sm-3 col-lg-3">
+				<!-- BLOCO HORÁRIO LOCAL -->
+				<div class="half-unit">
+					<div class="topo-unit">
+						<dtitle>Horário Local</dtitle>
+					</div>
+					<hr>
+					<div class="clockcenter">
+						<digiclock>12:45:25</digiclock>
+					</div>
+				</div>
+				<!-- BLOCO STATUS DO REDIS -->
+				<div id="divUpDown" class="half-unit">
+					<div class="topo-unit">
+						<dtitle>Status Redis</dtitle>
+					</div>
+					<hr>
+					<div class="cont">
+						<p>
+							<img id="imgUpDown" src="assets/img/up.png" alt="">
+							<bold id="upDown">Up</bold> |
+							<strong id="latencia">356ms.</strong>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3 col-lg-3">
+				<!-- FILA DE RECEBIMENTO TEMPO REAL -->
+				<div class="half-unit">
+					<div class="topo-unit">
+						<dtitle>Fila de Recebimento</dtitle>
+					</div>
+					<hr>
+					<div class="cont">
+						<p>
+							<bold id="quantidadeRecebe">0</bold>
+						</p>
+						<p>
+							<img src="assets/img/up-small.png" alt="">
+							<strong id="recebeMaiorMensagem">0</strong> Max. |
+							<img src="assets/img/down-small.png" alt="">
+							<strong id="recebeMenorMensagem">9999999</strong> Min.</p>
+					</div>
+				</div>
+				<!-- FILA DE RESPOSTAS TEMPO REAL -->
+				<div class="half-unit">
+					<div class="topo-unit">
+						<dtitle>Fila de Respostas</dtitle>
+					</div>
+					<hr>
+					<div class="cont">
+						<p>
+							<bold id="quantidadeResposta">0</bold>
+						</p>
+						<p>
+							<img src="assets/img/up-small.png" alt="">
+							<strong id="respostaMaiorMensagem">0</strong> Max. |
+							<img src="assets/img/down-small.png" alt="">
+							<strong id="respostaMenorMensagem">9999999</strong> Min.</p>
+					</div>
+				</div>
+			</div>
+			<!-- BLOCO MENSAGENS FILA RESPOSTA -->
+			<div class="col-sm-3 col-lg-3">
+				<div class="dash-unit">
+					<div class="topo-unit">
+						<dtitle>Gráfico de Mensagens</dtitle>
+					</div>
+					<hr>
+					<div id="load"></div>
+					<h2 id="totalMensagem">0</h2>
+				</div>
+			</div>
+			<!-- BLOCO Gráfico da Memória -->
+			<div class="col-sm-3 col-lg-3">
+				<div class="dash-unit">	
+					<div class="topo-unit">	
+						<dtitle>Gráfico da Memória</dtitle>
+					</div>
+					<hr>
+					<div class="info-user">
+						<span aria-hidden="true" class="li_trash fs2"></span>
+					</div>
+					<canvas id="canvas" width="300" height="300">
+					</canvas>
+				
+				</div>
+			</div>
+		</div>
+		<!-- /row -->
+
+		<!-- SEGUNDA ROW OF BLOCKS -->
+		<div class="row">
+			<div>
+
+				<!-- Tabela Recebimento -->
+				<div class="col-sm-3 col-lg-6">
+					
+					<table class="display dataTable" id="dt1" data-page-length='25'>
+					<h4>
+						<strong>Recebimento</strong>
+					</h4>
+						<thead>
+							<tr>
+								<th>CNPJ</th>
+								<th>MENSAGENS</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+
+				<!-- Tabela Respostas -->
+				<div class="col-sm-3 col-lg-6">
+					<h4>
+						<strong>Respostas</strong>
+					</h4>
+					<table class="display table2" id="dt2" data-page-length='25'>
+						<thead>
+							<tr>
+								<th>CNPJ</th>
+								<th>MENSAGENS</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+		</div>
+		<br>
+		<br>
+		<div class="row">
+		</div>
+		<!-- /row -->
+
+
+	</div>
+	<!-- /container -->
+
+
+	<div id="footerwrap">
+		<footer class="clearfix"></footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12 col-lg-12">
+					<p>
+						<img src="assets/images/favicon-painel-1.png" alt="">
+					</p>
+					<p>Blocks Dashboard Theme - Adaptado para Oobj TI</p>
+				</div>
+
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /footerwrap -->
+
+
+	<!-- Le javascript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
+	<script type="text/javascript" src="assets/js/dash-charts.js"></script>
+	<script type="text/javascript" src="assets/js/gauge-memoria.js"></script>
+	<!--<script type="text/javascript" src="assets/js/lineandbars.js"></script> -->
+
+
+	<!-- NOTY JAVASCRIPT -->
+	<script type="text/javascript" src="assets/js/noty/jquery.noty.js"></script>
+	<script type="text/javascript" src="assets/js/noty/layouts/top.js"></script>
+	<script type="text/javascript" src="assets/js/noty/layouts/topLeft.js"></script>
+	<script type="text/javascript" src="assets/js/noty/layouts/topRight.js"></script>
+	<script type="text/javascript" src="assets/js/noty/layouts/topCenter.js"></script>
+
+	<!-- You can add more layouts if you want -->
+	<script type="text/javascript" src="assets/js/noty/themes/default.js"></script>
+	<!-- <script type="text/javascript" src="assets/js/dash-noty.js"></script> This is a Noty bubble when you init the theme-->
+	<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="assets/js/jquery.flexslider.js" type="text/javascript"></script>
+
+	<script type="text/javascript" src="assets/js/admin.js"></script>
+
+	<!-- DataTables Inicialização -->
+	<script type="text/javascript" src="assets/js/datatables/jquery.dataTables.js"></script>
+	<!-- JS Personalizado -->
+	<script type="text/javascript" src="assets/js/ping.js"></script>
+	<script type="text/javascript" src="assets/js/manipularJson.js"></script>
+
+	<script>
+		$(".dataTables_filter input").click(function () {
+			alert("entrouuuuu");
+		});
+	</script>
+</body>
+
+</html>
